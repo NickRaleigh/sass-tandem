@@ -29,11 +29,11 @@
       // TODO: Add grid gap.
 
     //process grid modifiers
-    @include parseModifiers($childrenObj, $breakPoint, $gridModifiers);
+
 
     // parse perch for internet explorer
     $preventDefaultDuplicates: 0;
     $preventBpDuplicates: 0;
-    @include parseIE($childrenObj, $gridTemplate, $breakPoint, $preventDefaultDuplicates, $preventBpDuplicates);
+    
 
 }

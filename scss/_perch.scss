@@ -2,69 +2,103 @@
 @import 'perch-array';
 @import 'perch-parse-helper';
 
-@mixin perch($childrenObj:null, $settingsObj:[]) {
-  // create grid
-  display: grid;
-
-  // name template-areas of children
-  @if ($childrenObj != null) {
-    @each $name, $selector in $childrenObj {
-      #{$selector} {
-        grid-area: $name;
-      }
-    }
-  }
+@mixin perch($childrenObj:null, $settingsObj:()) {
 
   @if(type-of($settingsObj) == 'list') {
     @include perch-array($childrenObj, $settingsObj);
   }
 
-  @else {
-    // loop over entire object
-    @each $breakPoint, $settings in $settingsObj {
-      $gridTemplate: [];
-      $gridModifiers: [];
+  @else {                                          
 
-      //loop over each setting to remove grid-template-area from special grid modifiers.
-      @each $setting in $settings {
-        $first-char: str-slice(quote($setting), 1,1);
-        @if ($first-char != _) {
-          $gridTemplate: join($gridTemplate, $setting, comma);
+    // loop over entire object                     
+    @each $breakPoint, $settings in $settingsObj { 
+
+        $settingHasFontSize: false;
+        $settingHasPadding: false;
+        $settingHasMargin: false;
+        $settingHasDimensions: false;
+        $settingHasMinMaxWidth: false;
+
+        $fontSizeSetting: false;
+        $paddingSetting: false;
+        $marginSetting: false;
+        $dimensionSetting: false;
+        $minMaxWidthSetting: false;
+        $minMaxHeightSetting: false;
+
+      //loop over each setting 
+      @each $target, $setting in $settings {
+
+        $selector: map-get($childrenObj,$target);
+
+        // turn all safe whitespaces into neutral character `
+        $safeWhiteSpacePatterns: [
+          ', ',
+          ' )',
+          '( ',
+          ' - ',
+          ' x ',
+          ' . '
+        ];
+
+        @each $pattern in $safeWhiteSpacePatterns {
+          $setting: str-replace(quote($setting), $pattern, '`');
+        }
+
+        // split all spaces into array
+        $rules: str-split($setting, ' ');
+
+        // loop over array and reassign variables above
+        $rulesPatterns: (
+          fontsize: ['1','2','3','4','5','6','7','8','9','0','.'],
+          padding: 'p(',
+          margin: 'm(',
+          dimension: 'd(',
+          minMaxWidth: 'mw(',
+          minMaxHeight: 'mh('
+        );
+
+        @each $rule in $rules {
+          @each $ruleName, $pattern in $rulesPatterns {
+
+            // Parse font size
+            @if ($ruleName == fontsize) {
+              $rule-first-char: str-slice(quote($rule), 1,1);
+              @each $number in $pattern {
+                @if ($number == $rule-first-char) {
+                  $settingHasFontSize: true;
+                  $fontSizeSetting: unquote($rule);
+                }
+              }
+            }
+          }
+        }
+
+        //check target & use declaration:
+        @if ($target == this) {
+          //check breakpoint & assign css
+          @if ($breakPoint == 'default') {
+            @if ($settingHasFontSize) { font-size: $fontSizeSetting; }
+          } 
+          @else {
+            @include media('screen', '#{$breakPoint}') {
+              @if ($settingHasFontSize) { font-size: $fontSizeSetting; }
+            }
+          }
         }
         @else {
-          $gridModifiers: join($gridModifiers, $setting, comma);
+          #{$selector} {
+            @if ($breakPoint == 'default') {
+              @if ($settingHasFontSize) { font-size: $fontSizeSetting; }
+            } 
+            @else {
+              @include media('screen', '#{$breakPoint}') {
+                @if ($settingHasFontSize) { font-size: $fontSizeSetting; }
+              }
+            }
+          }
         }
       }
-
-      // convert gridTemplate to set of strings for css
-      $gridTemplateCss: null;
-      @each $row in $gridTemplate {
-        @if ($gridTemplateCss == null) {
-          $gridTemplateCss: $row;
-        }
-        @else {
-          $gridTemplateCss: join($gridTemplateCss,$row, space);
-        }
-      }
-
-      //check breakpoint & assign css
-      @if ($breakPoint == 'default') {
-        grid-template-areas: $gridTemplateCss;
-        // TODO: Add grid gap.
-      } @else {
-        @include media('screen', '#{$breakPoint}') {
-          grid-template-areas: $gridTemplateCss;
-        }
-      }
-
-      //process grid modifiers
-      @include parseModifiers($childrenObj, $breakPoint, $gridModifiers);
-
-      // parse perch for internet explorer
-      $preventDefaultDuplicates: 0;
-      $preventBpDuplicates: 0;
-      @include parseIE($childrenObj, $gridTemplate, $breakPoint, $preventDefaultDuplicates, $preventBpDuplicates);
-
     }
   }
 }
