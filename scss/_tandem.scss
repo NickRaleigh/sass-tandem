@@ -28,8 +28,10 @@
         $marginSetting: false;
         $widthSetting: false;
         $heightSetting: false;
-        $minMaxWidthSetting: false;
-        $minMaxHeightSetting: false;
+        $minWidthSetting: false;
+        $maxWidthSetting: false;
+        $minHeightSetting: false;
+        $maxHeightSetting: false;
 
         @each $child, $settingRow in $settings {
         @each $setting in $settingRow {
@@ -56,6 +58,7 @@
               }
             }
           }
+
           // check for margin
           @elseif ($first-char == "m") {
             $parsedSetting: str-replace($setting, $search:'m(', $replace: '');
@@ -93,8 +96,52 @@
               }
 
             }
-            @debug $widthSetting;
-            @debug $heightSetting;
+          }
+
+          // check for min/max width
+          @elseif ($first-char == "w") {
+            $parsedSetting: str-replace($setting, $search:'w(', $replace: '');
+            $parsedSetting: str-replace($parsedSetting, $search:')', $replace: '');
+            $parsedSetting: str-split($parsedSetting, ' ');
+            @if (length($parsedSetting) == 1) {
+              $parsedSetting: nth($parsedSetting, 1);
+              $minWidthSetting: appendem($parsedSetting);
+              $maxWidthSetting: appendem($parsedSetting);
+            } @else {
+              $minWidthSetting: appendem(nth($parsedSetting, 1));
+              $maxWidthSetting: appendem(nth($parsedSetting, 2));
+
+              @if(nth($parsedSetting, 1) == i) {
+                $minWidthSetting: false;
+              }
+              @if(nth($parsedSetting, 2) == i) {
+                $maxWidthSetting: false;
+              }
+            }
+          }
+
+          // check for min/max height
+          @elseif ($first-char == "h") {
+            $parsedSetting: str-replace($setting, $search:'h(', $replace: '');
+            $parsedSetting: str-replace($parsedSetting, $search:')', $replace: '');
+            $parsedSetting: str-split($parsedSetting, ' ');
+            @if (length($parsedSetting) == 1) {
+              $parsedSetting: nth($parsedSetting, 1);
+              $minHeightSetting: appendem($parsedSetting);
+              $maxHeightSetting: appendem($parsedSetting);
+            } @else {
+              $minHeightSetting: appendem(nth($parsedSetting, 1));
+              $maxHeightSetting: appendem(nth($parsedSetting, 2));
+
+              @if(nth($parsedSetting, 1) == i) {
+                $minHeightSetting: false;
+              }
+              @if(nth($parsedSetting, 2) == i) {
+                $maxHeightSetting: false;
+              }
+            }
+            @debug $minHeightSetting;
+            @debug $maxHeightSetting;
           }
         }
       }
