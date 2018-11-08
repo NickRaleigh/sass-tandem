@@ -1,0 +1,103 @@
+@import 'include-media';
+@import 'tandem-array';
+@import 'tandem-parse-helper';
+
+@function appendem($setting) {
+  $setting: unquote($setting);
+  @if (str-index($setting, 'auto') or str-index($setting, 'rem') or str-index($setting, 'em') or str-index($setting, 'cm') or str-index($setting, 'mm') or str-index($setting, 'in') or str-index($setting, 'px') or str-index($setting, 'pt') or str-index($setting, 'pc') or str-index($setting, 'ex') or str-index($setting, 'ch') or str-index($setting, 're') or str-index($setting, 'vw') or str-index($setting, 'vh') or str-index($setting, 'vmin') or str-index($setting, 'vmax') or str-index($setting, '%')) {
+    @return unquote($setting);
+  } 
+  @else {
+    @return unquote($setting) + 'em';
+  }
+}
+
+@mixin tandem($children, $settingsObj:()) {
+
+  @if(type-of($settingsObj) == 'list') {
+    @include tandem-array($childrenObj, $settingsObj);
+  }
+
+  @else {                                          
+
+    // loop over entire object                     
+    @each $breakPoint, $settings in $settingsObj { 
+
+        $fontSizeSetting: false;
+        $paddingSetting: false;
+        $marginSetting: false;
+        $widthSetting: false;
+        $heightSetting: false;
+        $minMaxWidthSetting: false;
+        $minMaxHeightSetting: false;
+
+        @each $child, $settingRow in $settings {
+        @each $setting in $settingRow {
+
+          $first-char: str-slice(quote($setting), 1,1);
+          // check for font size 
+          @if (type-of($setting) == number) {
+            $setting: quote($setting);
+            $fontSizeSetting: appendem($setting);
+          }
+
+          // check for padding
+          @elseif ($first-char == "p") {
+            $parsedSetting: str-replace($setting, $search:'p(', $replace: '');
+            $parsedSetting: str-replace($parsedSetting, $search:')', $replace: '');
+            $parsedSetting: str-split($parsedSetting, ' ');
+
+            @each $parsed in $parsedSetting {
+              $parsed: appendem($parsed);
+              @if ($paddingSetting == false) {
+                $paddingSetting: $parsed;
+              } @else {
+                $paddingSetting: $paddingSetting + ' ' + $parsed;
+              }
+            }
+          }
+          // check for margin
+          @elseif ($first-char == "m") {
+            $parsedSetting: str-replace($setting, $search:'m(', $replace: '');
+            $parsedSetting: str-replace($parsedSetting, $search:')', $replace: '');
+            $parsedSetting: str-split($parsedSetting, ' ');
+
+            @each $parsed in $parsedSetting {
+              $parsed: appendem($parsed);
+              @if ($marginSetting == false) {
+                $marginSetting: $parsed;
+              } @else {
+                $marginSetting: $marginSetting + ' ' + $parsed;
+              }
+            }
+          }
+
+          //check for sizes
+          @elseif ($first-char == "s") {
+            $parsedSetting: str-replace($setting, $search:'s(', $replace: '');
+            $parsedSetting: str-replace($parsedSetting, $search:')', $replace: '');
+            $parsedSetting: str-split($parsedSetting, ' ');
+            @if (length($parsedSetting) == 1) {
+              $parsedSetting: nth($parsedSetting, 1);
+              $widthSetting: appendem($parsedSetting);
+              $heightSetting: appendem($parsedSetting);
+            } @else {
+              $widthSetting: appendem(nth($parsedSetting, 1));
+              $heightSetting: appendem(nth($parsedSetting, 2));
+
+              @if(nth($parsedSetting, 1) == i) {
+                $widthSetting: false;
+              }
+              @if(nth($parsedSetting, 2) == i) {
+                $heightSetting: false;
+              }
+
+            }
+            @debug $widthSetting;
+            @debug $heightSetting;
+          }
+        }
+      }
+    }
+  }
+}

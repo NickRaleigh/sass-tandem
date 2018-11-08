@@ -1,4 +1,4 @@
-@import 'perch';
+@import 'tandem';
 
 *{ margin: 0; padding: 0; }
 
@@ -9,24 +9,26 @@
     description: '&__description'
   );                                             
                                                  
-  @include perch($childrenObj, (                 
-                                                 
-  'default': (                                   
-    this: 16px,                                  
-    heading: '1.125 p(0.375, 15) m(0,0,5,0) d(20px x 2) mw(i - 500px) mh(200px - 5)',
-    description: 1
-  ),
-  ))
+  @include tandem($childrenObj, (                 
+                                                        
+  'default': (                                          
+    this: 28 p(10 20 auto) m(20 auto 5px 2cm) s(15px 20),
+    heading: 1.5rem,
+    description: 1                                      
+  ),                                                    
 
+  '<=tablet': (
+    this: 28px
+  )
+
+  ))                                                    
+
+    // heading: '1.125, p(0.375 15), m(0 0 5 0), s(20px 2), mw(i 500px), mh(200px 5)',
 }                            
                                                  
-                                                 
-                                                 
-                                                 
-                                                 
-                                                 
-                                                 
-
+                                                        
+                                                        
+                                                        
 
 
 

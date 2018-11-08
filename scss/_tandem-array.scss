@@ -1,4 +1,4 @@
-@mixin perch-array($childrenObj, $settingsArray) {
+@mixin tandem-array($childrenObj, $settingsArray) {
   $gridTemplate: [];
   $gridModifiers: [];
   $breakPoint: 'default';
@@ -31,7 +31,7 @@
     //process grid modifiers
 
 
-    // parse perch for internet explorer
+    // parse tandem for internet explorer
     $preventDefaultDuplicates: 0;
     $preventBpDuplicates: 0;
     
