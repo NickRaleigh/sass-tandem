@@ -140,8 +140,65 @@
                 $maxHeightSetting: false;
               }
             }
-            @debug $minHeightSetting;
-            @debug $maxHeightSetting;
+          }
+        }
+        // render
+        @if ($child == this) {
+          @if ($breakPoint == 'default') {
+            @if ($fontSizeSetting) { font-size: $fontSizeSetting; }
+            @if ($paddingSetting) { padding: $paddingSetting; }
+            @if ($marginSetting) { margin: $marginSetting; }
+            @if ($widthSetting) { width: $widthSetting; }
+            @if ($heightSetting) { height: $heightSetting; }
+            @if ($minWidthSetting) { min-width: $minWidthSetting; }
+            @if ($maxWidthSetting) { max-width: $maxWidthSetting; }
+            @if ($minHeightSetting) { min-height: $minHeightSetting; }
+            @if ($maxHeightSetting) { max-height: $maxHeightSetting; }
+          }
+          @else {
+            @include media ('screen', $breakPoint) {
+              @if ($fontSizeSetting) { font-size: $fontSizeSetting; }
+              @if ($paddingSetting) { padding: $paddingSetting; }
+              @if ($marginSetting) { margin: $marginSetting; }
+              @if ($widthSetting) { width: $widthSetting; }
+              @if ($heightSetting) { height: $heightSetting; }
+              @if ($minWidthSetting) { min-width: $minWidthSetting; }
+              @if ($maxWidthSetting) { max-width: $maxWidthSetting; }
+              @if ($minHeightSetting) { min-height: $minHeightSetting; }
+              @if ($maxHeightSetting) { max-height: $maxHeightSetting; }
+            }
+          }
+        }
+        @else {
+          $childSelector: map-get($children, $child);
+          @debug $childSelector;
+          @if ($breakPoint == 'default') {
+            #{$childSelector} {
+              @if ($fontSizeSetting) { font-size: $fontSizeSetting; }
+              @if ($paddingSetting) { padding: $paddingSetting; }
+              @if ($marginSetting) { margin: $marginSetting; }
+              @if ($widthSetting) { width: $widthSetting; }
+              @if ($heightSetting) { height: $heightSetting; }
+              @if ($minWidthSetting) { min-width: $minWidthSetting; }
+              @if ($maxWidthSetting) { max-width: $maxWidthSetting; }
+              @if ($minHeightSetting) { min-height: $minHeightSetting; }
+              @if ($maxHeightSetting) { max-height: $maxHeightSetting; }
+            }
+          }
+          @else {
+            @include media ('screen', $breakPoint) {
+              #{$childSelector} {
+                @if ($fontSizeSetting) { font-size: $fontSizeSetting; }
+                @if ($paddingSetting) { padding: $paddingSetting; }
+                @if ($marginSetting) { margin: $marginSetting; }
+                @if ($widthSetting) { width: $widthSetting; }
+                @if ($heightSetting) { height: $heightSetting; }
+                @if ($minWidthSetting) { min-width: $minWidthSetting; }
+                @if ($maxWidthSetting) { max-width: $maxWidthSetting; }
+                @if ($minHeightSetting) { min-height: $minHeightSetting; }
+                @if ($maxHeightSetting) { max-height: $maxHeightSetting; }
+              }
+            }
           }
         }
       }

@@ -11,19 +11,21 @@
                                                  
   @include tandem($childrenObj, (                 
                                                         
-  'default': (                                          
-    this: 28 p(10 20 auto) m(20 auto 5px 2cm) s(15px 20) w(20 i) h(i 14px),
-    heading: 1.5rem,
-    description: 1                                      
-  ),                                                    
+    'default': (                                          
+      this: 10px s(100vw i),
+      heading: 2.5,
+      description: 1.2,
+      img: s(100% i) w(i 300px)
+    ),                                                    
 
-  '<=tablet': (
-    this: 28px
-  )
+    '<=tablet': (
+      this: 14px,
+      heading: 2,
+      img: s(14 i)
+    )
 
   ))                                                    
 
-    // heading: '1.125, p(0.375 15), m(0 0 5 0), s(20px 2), w(i 500px), h(200px 5)',
 }                            
                                                  
                                                         
